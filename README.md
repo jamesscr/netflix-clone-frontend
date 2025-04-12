@@ -15,7 +15,7 @@ npm install
 `
 yarn setup
 `
-
+or
 `
 npm run setup
 `
@@ -25,7 +25,7 @@ npm run setup
 `
 yarn dev
 `
-
+or
 `
 npm run dev
 `
