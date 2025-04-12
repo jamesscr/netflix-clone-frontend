@@ -1,0 +1,167 @@
+.featured {
+  height: 67vh;
+  position: relative;
+  overflow: hidden;
+
+  .featured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+
+    &.changing {
+      opacity: 0;
+    }
+  }
+  .category {
+    position: absolute;
+    top: 80px;
+    left: 50px;
+    font-size: 30px;
+    font-weight: 500;
+    color: white;
+    display: flex;
+    align-items: center;
+
+    select {
+      cursor: pointer;
+      background-color: var(--main-color);
+      border: 1px solid white;
+      color: white;
+      margin-left: 20px;
+      padding: 5px;
+    }
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .info {
+    width: 35%;
+    position: absolute;
+    left: 50px;
+    bottom: 100px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+
+    img {
+      width: 400px;
+    }
+
+    .desc {
+      margin-top: 20px;
+    }
+
+    .buttons {
+      display: flex;
+      align-items: center;
+
+      .info-button-wrapper {
+        position: relative;
+        margin-left: 10px;
+
+        .matrix-hovered-content {
+          position: absolute;
+          top: -450px; // Adjust this value to fine-tune the vertical position
+          left: calc(100% + 10px); // Position it to the right of the button
+          width: 300px;
+          background-color: rgba(0, 0, 0, 0.85);
+          border-radius: 8px;
+          padding: 16px;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          z-index: 1000;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.3s ease, visibility 0.3s ease,
+            transform 0.3s ease;
+          transform: translateY(10px);
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 15px; // Align with the top of the content
+            left: -10px;
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 10px solid rgba(0, 0, 0, 0.85);
+          }
+
+          .matrix-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 12px;
+          }
+
+          .matrix-info {
+            color: white;
+            text-align: left;
+
+            .matrix-icons {
+              display: flex;
+              justify-content: flex-start;
+              margin-bottom: 8px;
+
+              .MuiIconButton-root {
+                color: white;
+                padding: 6px;
+
+                &:hover {
+                  background-color: rgba(255, 255, 255, 0.1);
+                }
+              }
+            }
+
+            .matrix-info-top {
+              display: flex;
+              align-items: center;
+              margin-bottom: 8px;
+
+              span {
+                margin-right: 8px;
+                font-size: 14px;
+
+                &.limit {
+                  border: 1px solid white;
+                  padding: 2px 4px;
+                  border-radius: 3px;
+                }
+              }
+            }
+
+            .matrix-title {
+              font-size: 18px;
+              margin-bottom: 8px;
+            }
+
+            .matrix-desc {
+              font-size: 14px;
+              margin-bottom: 8px;
+            }
+
+            .matrix-genre {
+              font-size: 12px;
+              color: #ccc;
+            }
+          }
+        }
+
+        &:hover .matrix-hovered-content {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+  }
+}

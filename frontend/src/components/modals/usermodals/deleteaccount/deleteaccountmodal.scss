@@ -1,0 +1,33 @@
+.delete-user-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: white;
+  border: 2px solid #000;
+  box-shadow: 24px;
+  padding: 16px;
+
+  h2 {
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  p {
+    margin-bottom: 24px;
+  }
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      width: 48%;
+    }
+  }
+}
+.useremail {
+  text-align: center;
+}

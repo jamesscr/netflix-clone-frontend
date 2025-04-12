@@ -1,0 +1,12 @@
+.topbar {
+    background-color: #111 !important;
+    color: white !important;
+
+    .title {
+      flex-grow: 1;
+    }
+  
+    .icons {
+      display: flex;
+    }
+  }

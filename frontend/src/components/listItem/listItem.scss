@@ -1,0 +1,84 @@
+.listItem {
+  width: 230px;
+  height: 200px;
+  background-color: var(--main-color);
+  margin-right: 5px;
+  overflow: visible;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  transform-origin: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  &:hover {
+    top: -10px;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    transform: translateY(-100px);
+    box-shadow: 0px 0px 15px 0px rgba(255, 255, 255, 0.07);
+    width: 325px;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  .itemInfo {
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .icons {
+      display: flex;
+      margin-bottom: 10px;
+
+      .icon {
+        border: 2px solid white;
+        padding: 5px;
+        border-radius: 50%;
+        margin-right: 10px;
+        font-size: 16px;
+      }
+    }
+
+    .itemInfoTop {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: gray;
+
+      .limit {
+        border: 1px solid gray;
+        padding: 1px 3px;
+        margin: 0 10px;
+      }
+    }
+
+    .desc {
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    .genre {
+      font-size: 14px;
+      color: lightgray;
+    }
+  }
+
+  &:hover .itemInfo {
+    display: flex;
+    align-items: start;
+    justify-content: space-evenly;
+    padding-left: 20px;
+  }
+}

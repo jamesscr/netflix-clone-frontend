@@ -1,0 +1,11 @@
+{
+    "name": "netflix-clone",
+    "version": "1.0.0",
+    "scripts": {
+      "setup": "yarn --cwd backend install && yarn --cwd frontend install",
+      "dev": "concurrently \"yarn --cwd backend dev\" \"yarn --cwd frontend start\""
+    },
+    "devDependencies": {
+      "concurrently": "^6.2.0"
+    }
+  }

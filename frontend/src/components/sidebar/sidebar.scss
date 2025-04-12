@@ -1,0 +1,38 @@
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+
+  .MuiDrawer-paper {
+    width: 240px;
+    box-sizing: border-box;
+    background-color: #111;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .logout-button {
+    margin-top: auto;
+  }
+
+  .MuiListItem-root {
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .MuiListItemIcon-root {
+    color: white;
+  }
+
+  .MuiDivider-root {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}

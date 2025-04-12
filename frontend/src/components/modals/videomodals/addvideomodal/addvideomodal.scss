@@ -1,0 +1,87 @@
+.add-video-modal {
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      max-width: 90%;
+      background-color: #827e7e;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      padding: 24px;
+      color: rgb(235, 227, 227) !important;
+  
+      .modal-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+  
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 100%; // Ensure the form takes full width
+  
+        .form-field {
+          width: 100%; // Ensure form fields take full width
+  
+          .MuiInputBase-root {
+            background-color: #333;
+            border-radius: 4px;
+            width: 100%; // Ensure input takes full width
+          }
+  
+          .MuiInputLabel-root {
+            color: #c2bebe !important;
+          }
+  
+          .MuiInputBase-input {
+            color: #e6e1e1 !important;
+          }
+  
+          .MuiOutlinedInput-notchedOutline {
+            border-color: #363535 !important;
+          }
+  
+          &:hover .MuiOutlinedInput-notchedOutline {
+            border-color: #777 !important;
+          }
+  
+          &.Mui-focused {
+            .MuiOutlinedInput-notchedOutline {
+              border-color: #e50914 !important;
+            }
+            .MuiInputLabel-root {
+              color: #e50914 !important;
+            }
+          }
+        }
+  
+        .submit-button-container {
+          display: flex;
+          justify-content: flex-end;
+          width: 100%;
+          margin-top: 24px;
+  
+          .submit-button {
+            background-color: #e50914;
+            color: white;
+            font-weight: 600;
+            text-transform: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+  
+            &:hover {
+              background-color: #f40612;
+            }
+          }
+        }
+      }
+    }
+  }
