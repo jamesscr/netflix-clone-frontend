@@ -156,6 +156,11 @@ const Navbar = () => {
                     Delete Account
                   </span>
                 </Link>
+                {profile?.role === "admin" && (
+                  <Link to="/admin" className="dropdown-item">
+                    Dashboard
+                  </Link>
+                )}
               </div>
             )}
           </div>
