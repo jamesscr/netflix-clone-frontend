@@ -17,7 +17,6 @@ exports.isAuth = async (req, res, next) => {
 
 exports.isAdmin = async (req, res, next) => {
   const { user } = req;
-  console.log(user.role);
   if (user.role === "admin") next();
   else
     return res.json({
