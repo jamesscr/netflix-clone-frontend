@@ -5,19 +5,20 @@ import { Link, useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../modals/usermodals/changepassword/ChangePasswordModal";
 import DeleteAccountModal from "../modals/usermodals/deleteaccount/DeleteAccountModal";
 import { updatePassword, deleteAccount } from "../../api/auth";
-import { useAuth } from "../../hooks";
+import { useAuth, useNotification } from "../../hooks";
+import { validatePassword } from "../modals/usermodals/changepassword/ChangePasswordModal";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [selectedUser, setSelectedUser] = useState();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const [openChangePasswordModal, setOpenChangePasswordModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
   const dropdownRef = useRef(null);
 
   const { authInfo, handleLogout, resetAuthState } = useAuth();
+  const { updateNotification } = useNotification();
   const { isLoggedIn, profile } = authInfo;
   const navigate = useNavigate();
 
@@ -52,11 +53,11 @@ const Navbar = () => {
       window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
-      // Optionally, you can show an error message to the user here
+      updateNotification("error", "Logout failed. Please try again.");
     } finally {
       setIsLoggingOut(false);
     }
-  }, [handleLogout, navigate]);
+  }, [handleLogout, navigate, updateNotification]);
 
   const handleOpenChangePasswordModal = () => {
     setShowDropdown(false);
@@ -65,6 +66,7 @@ const Navbar = () => {
 
   const handleCloseChangePasswordModal = () => {
     setOpenChangePasswordModal(false);
+    setPasswordError("");
   };
 
   const handleOpenDeleteAccountModal = () => {
@@ -77,8 +79,15 @@ const Navbar = () => {
   };
 
   const handleChangePassword = async (passwordData) => {
+    setPasswordError("");
+
+    const validationResult = validatePassword(passwordData);
+    if (!validationResult.isValid) {
+      setPasswordError(validationResult.error);
+      return;
+    }
+
     try {
-      // Call API to update the user's password
       await updatePassword(
         profile.email,
         passwordData.currentPassword,
@@ -87,10 +96,10 @@ const Navbar = () => {
 
       setShowDropdown(false);
       handleCloseChangePasswordModal();
-      // Optionally, you can show a success message to the user here
+      updateNotification("success", "Password updated successfully");
     } catch (error) {
       console.error("Error updating password:", error);
-      // Handle the error (e.g., display an error message to the user)
+      setPasswordError("Failed to update password. Please try again.");
     }
   };
 
@@ -99,33 +108,25 @@ const Navbar = () => {
       await deleteAccount(password);
       handleCloseDeleteAccountModal();
 
-      // Reset all relevant states
       setIsLoggingOut(false);
       setShowDropdown(false);
-      setModalOpen(false);
       setOpenChangePasswordModal(false);
       setOpenDeleteModal(false);
 
-      // Perform logout
       await handleLogout();
-
-      // Clear any stored auth data (if not already done in handleLogout)
-      localStorage.removeItem("auth-token"); // Adjust this based on how you store auth data
-
-      // Reset auth state explicitly
-      // You might need to add a function to your useAuth hook to do this
+      localStorage.removeItem("auth-token");
       resetAuthState();
 
-      // Navigate to login page
       navigate("/login", { replace: true });
+      updateNotification("success", "Account deleted successfully");
     } catch (error) {
       console.error("Error deleting user account:", error);
-      // Display error message to the user
+      updateNotification(
+        "error",
+        "Failed to delete account. Please try again."
+      );
     }
   };
-
-  const handleModalOpen = () => setModalOpen(true);
-  const handleModalClose = () => setModalOpen(false);
 
   return (
     <div className={isScrolled ? "navbar scrolled" : "navbar"}>
@@ -178,6 +179,7 @@ const Navbar = () => {
         open={openChangePasswordModal}
         handleClose={handleCloseChangePasswordModal}
         handleSave={handleChangePassword}
+        error={passwordError}
       />
       <DeleteAccountModal
         user={profile}
@@ -185,7 +187,6 @@ const Navbar = () => {
         handleClose={handleCloseDeleteAccountModal}
         handleDelete={handleDeleteAccount}
       />
-      {/* <AddVideoModal open={modalOpen} handleClose={handleModalClose} /> */}
     </div>
   );
 };

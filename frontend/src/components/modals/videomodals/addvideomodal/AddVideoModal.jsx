@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
+import { addMovie } from "../../../../api/video";
+import { useNotification } from "../../../../hooks";
 import "./addvideomodal.scss";
 
 const AddVideoModal = ({ open, handleClose }) => {
-  const handleSubmit = (event) => {
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [description, setDescription] = useState("");
+  const { updateNotification } = useNotification();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Handle form submission here
-    handleClose();
+    try {
+      await addMovie({ title, url, description });
+      handleClose();
+      setTitle("");
+      setUrl("");
+      setDescription("");
+      updateNotification("success", "Video added successfully");
+    } catch (error) {
+      updateNotification("error", error.message);
+    }
   };
 
   return (
@@ -34,6 +49,8 @@ const AddVideoModal = ({ open, handleClose }) => {
             margin="normal"
             required
             className="form-field"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <TextField
             fullWidth
@@ -42,6 +59,8 @@ const AddVideoModal = ({ open, handleClose }) => {
             margin="normal"
             required
             className="form-field"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
           />
           <TextField
             fullWidth
@@ -51,6 +70,8 @@ const AddVideoModal = ({ open, handleClose }) => {
             multiline
             rows={4}
             className="form-field"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
           <div className="submit-button-container">
             <Button type="submit" variant="contained" className="submit-button">

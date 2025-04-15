@@ -28,6 +28,7 @@ const validateUserInfo = ({ name, email, password }) => {
 };
 
 export default function Register() {
+  const [error, setError] = useState("");
   const [userInfo, setUserInfo] = useState({
     name: "",
     email: "",
@@ -84,6 +85,7 @@ export default function Register() {
       <div className="container">
         <div className="form-wrapper">
           <h1>Register</h1>
+          {/* {error && <div className="error-message">{error}</div>} */}
           <form onSubmit={handleSubmit}>
             <input
               name="name"
@@ -92,7 +94,6 @@ export default function Register() {
               value={name}
               onChange={handleChange}
               autoComplete="off"
-              required
             />
             <input
               name="email"
@@ -101,7 +102,6 @@ export default function Register() {
               value={email}
               onChange={handleChange}
               autoComplete="new-email"
-              required
             />
             <input
               name="password"
@@ -110,7 +110,6 @@ export default function Register() {
               value={password}
               onChange={handleChange}
               autoComplete="new-password"
-              required
             />
             <button type="submit" className="registerButton">
               Start Membership

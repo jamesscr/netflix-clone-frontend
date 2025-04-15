@@ -28,20 +28,11 @@ exports.getLatestVideos = async (req, res) => {
 
 exports.addVideo = async (req, res) => {
   try {
-    const user = await User.findById(req.body.user);
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
     const video = new Video({
       title: req.body.title,
       description: req.body.description,
       url: req.body.url,
-      user: req.body.user,
     });
-
-    // updating review for movie.
-    user.videos.push(video._id);
-    await user.save();
 
     const savedVideo = await video.save();
     res.status(201).json(savedVideo);
@@ -70,24 +61,13 @@ exports.updateVideo = async (req, res) => {
 
 exports.deleteVideo = async (req, res) => {
   try {
-    const { videoId } = req.params;
-    const userId = req.user._id;
-
-    const video = await Video.findOne({ _id: videoId, user: userId });
+    const videoId = req.params.id;
+    const video = await Video.findById(videoId);
     if (!video) {
-      return res
-        .status(403)
-        .json({ message: "Vous n'êtes pas l'auteur de cette vidéo!" });
+      return res.status(404).json({ message: "Vidéo non trouvée" });
     }
 
-    const user = await User.findById(userId);
-    if (!user) {
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
-    }
-
-    user.videos = user.videos.filter((rId) => rId.toString() !== videoId);
     await Video.findByIdAndDelete(videoId);
-    await user.save();
 
     res.status(200).json({ message: "Vidéo supprimée avec succès" });
   } catch (error) {

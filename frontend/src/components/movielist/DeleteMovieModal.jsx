@@ -22,7 +22,7 @@ const DeleteMovieModal = ({ movie, open, handleClose, handleDelete }) => {
           <Button
             variant="contained"
             color="error"
-            onClick={() => handleDelete(movie.id)}
+            onClick={() => handleDelete()}
           >
             Supprimer
           </Button>

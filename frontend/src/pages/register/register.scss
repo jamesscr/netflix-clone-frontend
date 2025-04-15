@@ -41,7 +41,14 @@
       width: 300px;
 
       h1 {
+        text-align: center;
         margin-bottom: 28px;
+      }
+
+      .error-message {
+        text-align: center;
+        color: red;
+        margin-bottom: 10px;
       }
 
       form {

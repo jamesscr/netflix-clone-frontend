@@ -67,7 +67,7 @@ export default function Login() {
     const { ok, error: validationError } = validateUserInfo(userInfo);
 
     if (!ok) {
-      setError(validationError);
+      // setError(validationError);
       updateNotification("error", validationError);
       return;
     }
@@ -118,7 +118,7 @@ export default function Login() {
       <div className="container">
         <div className="form-wrapper">
           <h1>Sign In</h1>
-          {error && <div className="error-message">{error}</div>}
+          {/* {error && <div className="error-message">{error}</div>} */}
           <form onSubmit={handleSubmit}>
             <input
               name="email"
@@ -126,7 +126,6 @@ export default function Login() {
               placeholder="Email or phone number"
               value={userInfo.email}
               onChange={handleChange}
-              required
               autoComplete="new-email"
             />
             <input
@@ -135,7 +134,6 @@ export default function Login() {
               placeholder="Password"
               value={userInfo.password}
               onChange={handleChange}
-              required
               autoComplete="new-password"
             />
             <button type="submit" className="loginButton" disabled={isPending}>

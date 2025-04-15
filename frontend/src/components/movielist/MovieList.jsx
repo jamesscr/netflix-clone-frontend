@@ -8,12 +8,19 @@ import {
   TableRow,
   Paper,
   Button,
+  IconButton,
+  Box,
 } from "@mui/material";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline"; // import EditIcon from "@mui/icons-material/Edit";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import MovieDetails from "./MovieDetails";
 import EditMovieModal from "./EditMovieModal";
 import DeleteMovieModal from "./DeleteMovieModal";
-import { getAllVideos } from "../../api/video";
+import { getAllVideos, updateVideo, deleteVideo } from "../../api/video";
+import { useNotification } from "../../hooks";
+
 import "./movielist.scss";
 
 // Helper function to extract YouTube video ID
@@ -32,21 +39,22 @@ const MovieList = () => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { updateNotification } = useNotification();
+
+  const fetchMovies = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAllVideos();
+      setMovies(data);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      updateNotification("error", error.message);
+    }
+  };
 
   useEffect(() => {
     // TODO: Fetch movies from your API
-    const fetchMovies = async () => {
-      try {
-        setIsLoading(true);
-        const data = await getAllVideos();
-        setMovies(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-        setError("Failed to fetch movies. Please try again later.");
-        setIsLoading(false);
-      }
-    };
 
     fetchMovies();
     // using dummy data temporarily
@@ -73,27 +81,68 @@ const MovieList = () => {
 
   const handleCloseEditModal = () => {
     setOpenEditModal(false);
+    setSelectedMovie(null);
   };
 
-  const handleSaveEdit = (editedMovie) => {
-    setMovies(
-      movies.map((movie) => (movie.id === editedMovie.id ? editedMovie : movie))
-    );
-    // TODO: Send update to API
+  const handleSaveEdit = async (editedMovie) => {
+    try {
+      // Send update to API
+      const updatedMovie = await updateVideo(editedMovie._id, editedMovie);
+
+      // Close the edit modal
+      handleCloseEditModal();
+      // Update local state
+      setMovies(
+        movies.map((movie) =>
+          movie._id === updatedMovie._id ? updatedMovie : movie
+        )
+      );
+      // Refresh
+      fetchMovies();
+      updateNotification("success", "Movie updated successfully");
+    } catch (error) {
+      updateNotification("error", "Failed to update movie. Please try again.");
+    }
   };
+
   const handleOpenDeleteModal = (movie) => {
     setSelectedMovie(movie);
     setOpenDeleteModal(true);
   };
 
-  const handleCloseDeleteModal = () => {
+  const handleCloseDeleteModal = async () => {
     setOpenDeleteModal(false);
   };
 
-  const handleDelete = (movieId) => {
-    setMovies(movies.filter((movie) => movie.id !== movieId));
-    handleCloseDeleteModal();
-    // TODO: Send delete request to API
+  const handleDelete = async (movieToDelete) => {
+    if (!movieToDelete || !movieToDelete._id) {
+      console.error("Invalid movie object for deletion");
+      updateNotification("error", "Failed to delete movie: Invalid movie data");
+      return;
+    }
+
+    try {
+      // Send delete request to API
+      await deleteVideo(movieToDelete._id);
+
+      // Update local state immediately for better UX
+      setMovies(movies.filter((movie) => movie._id !== movieToDelete._id));
+
+      // Close the delete modal
+      handleCloseDeleteModal();
+
+      // Show success notification
+      updateNotification("success", "Movie deleted successfully");
+
+      // Refresh the movie list to ensure sync with backend
+      await fetchMovies();
+    } catch (error) {
+      console.error("Error deleting movie:", error);
+      updateNotification(
+        "error",
+        `Failed to delete movie: ${error.message || "Please try again."}`
+      );
+    }
   };
 
   return (
@@ -132,30 +181,38 @@ const MovieList = () => {
                   </TableCell>
                   <TableCell>{movie.description}</TableCell>
                   <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      onClick={() => handleOpenModal(movie)}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        gap: 1,
+                      }}
                     >
-                      Details
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="warning"
-                      size="small"
-                      onClick={() => handleOpenEditModal(movie)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      onClick={() => handleOpenDeleteModal(movie)}
-                    >
-                      Delete
-                    </Button>
+                      <IconButton
+                        color="primary"
+                        size="small"
+                        onClick={() => handleOpenModal(movie)}
+                        aria-label="details"
+                      >
+                        <PlayCircleOutlineIcon />
+                      </IconButton>
+                      <IconButton
+                        color="warning"
+                        size="small"
+                        onClick={() => handleOpenEditModal(movie)}
+                        aria-label="edit"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        size="small"
+                        onClick={() => handleOpenDeleteModal(movie)}
+                        aria-label="delete"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               );
@@ -178,7 +235,7 @@ const MovieList = () => {
         movie={selectedMovie}
         open={openDeleteModal}
         handleClose={handleCloseDeleteModal}
-        handleDelete={handleDelete}
+        handleDelete={() => selectedMovie && handleDelete(selectedMovie)}
       />
     </div>
   );

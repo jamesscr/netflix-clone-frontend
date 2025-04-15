@@ -4,6 +4,7 @@ import "./editmoviemodal.scss";
 
 const EditMovieModal = ({ movie, open, handleClose, handleSave }) => {
   const [editedMovie, setEditedMovie] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (movie) {
@@ -16,12 +17,40 @@ const EditMovieModal = ({ movie, open, handleClose, handleSave }) => {
     setEditedMovie((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateMovieInfo = (movieInfo) => {
+    const { title, description, url } = movieInfo;
+
+    if (!title.trim()) return { ok: false, error: "Title is missing!" };
+    if (title.length < 3)
+      return { ok: false, error: "Title must be at least 3 characters long!" };
+
+    if (!description.trim())
+      return { ok: false, error: "Description is missing!" };
+    if (description.length < 10)
+      return {
+        ok: false,
+        error: "Description must be at least 10 characters long!",
+      };
+
+    if (!url.trim()) return { ok: false, error: "YouTube URL is missing!" };
+    if (!url.includes("youtube.com") && !url.includes("youtu.be"))
+      return { ok: false, error: "Invalid YouTube URL!" };
+
+    return { ok: true };
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editedMovie) {
+      const validationResult = validateMovieInfo(editedMovie);
+      if (!validationResult.ok) {
+        setError(validationResult.error);
+        return;
+      }
       handleSave(editedMovie);
+      handleClose();
+      setError("");
     }
-    handleClose();
   };
 
   if (!editedMovie) return null;
@@ -33,12 +62,27 @@ const EditMovieModal = ({ movie, open, handleClose, handleSave }) => {
           Modifier le film
         </Typography>
         <form onSubmit={handleSubmit}>
+          {error && (
+            <Typography
+              color="error"
+              variant="body1"
+              style={{
+                marginBottom: "1rem",
+                padding: "0.5rem",
+                backgroundColor: "#ffebee",
+                borderRadius: "4px",
+                fontWeight: "bold",
+              }}
+            >
+              {error}
+            </Typography>
+          )}
           <TextField
             fullWidth
             margin="normal"
             label="Titre"
             name="title"
-            value={editedMovie.title || ""}
+            value={editedMovie.title}
             onChange={handleChange}
           />
           <TextField
@@ -48,7 +92,7 @@ const EditMovieModal = ({ movie, open, handleClose, handleSave }) => {
             name="description"
             multiline
             rows={4}
-            value={editedMovie.description || ""}
+            value={editedMovie.description}
             onChange={handleChange}
           />
           <TextField
@@ -56,7 +100,7 @@ const EditMovieModal = ({ movie, open, handleClose, handleSave }) => {
             margin="normal"
             label="URL YouTube"
             name="url"
-            value={editedMovie.url || ""}
+            value={editedMovie.url}
             onChange={handleChange}
           />
           <Box className="button-group">

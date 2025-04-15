@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Box, Typography, TextField, Button } from "@mui/material";
 import "./changepasswordmodal.scss";
-import { useAuth, useNotification } from "../../../../hooks";
 
-const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
-  const { updateNotification } = useNotification();
-
+const ChangePasswordModal = ({
+  user,
+  open,
+  handleClose,
+  handleSave,
+  error: externalError,
+}) => {
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
-  const [error, setError] = useState("");
+  const [internalError, setInternalError] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -20,6 +23,7 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
         newPassword: "",
         confirmNewPassword: "",
       });
+      setInternalError("");
     }
   }, [user]);
 
@@ -29,46 +33,22 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
       ...prev,
       [name]: value,
     }));
+    setInternalError(""); // Clear internal error on input change
   };
 
-  const validatePassword = () => {
-    if (passwordData.newPassword.length < 8) {
-      const errorMessage = "New password must be at least 8 characters long";
-      setError(errorMessage);
-      updateNotification("error", errorMessage);
-      return false;
-    }
-    if (passwordData.newPassword !== passwordData.confirmNewPassword) {
-      const errorMessage = "New passwords do not match";
-      setError(errorMessage);
-      updateNotification("error", errorMessage);
-      return false;
-    }
-    setError("");
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (validatePassword()) {
-      try {
-        await handleSave({
-          email: user.email,
-          currentPassword: passwordData.currentPassword,
-          newPassword: passwordData.newPassword,
-        });
-        handleClose();
-        updateNotification("success", "Password updated successfully");
-      } catch (error) {
-        updateNotification(
-          "error",
-          "Failed to update password. Please try again."
-        );
-      }
+    const validationResult = validatePassword(passwordData);
+    if (!validationResult.isValid) {
+      setInternalError(validationResult.error);
+    } else {
+      handleSave(passwordData);
     }
   };
 
   if (!user) return null;
+
+  const displayError = internalError || externalError;
 
   return (
     <Modal
@@ -81,6 +61,21 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
           Change Password
         </Typography>
         <form onSubmit={handleSubmit}>
+          {displayError && (
+            <Typography
+              color="error"
+              variant="body2"
+              style={{
+                marginBottom: "1rem",
+                padding: "0.5rem",
+                backgroundColor: "#ffebee",
+                borderRadius: "4px",
+                fontWeight: "bold",
+              }}
+            >
+              {displayError}
+            </Typography>
+          )}
           <TextField
             fullWidth
             margin="normal"
@@ -99,7 +94,6 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
             type="password"
             value={passwordData.currentPassword}
             onChange={handleChange}
-            required
           />
           <TextField
             fullWidth
@@ -109,7 +103,6 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
             type="password"
             value={passwordData.newPassword}
             onChange={handleChange}
-            required
           />
           <TextField
             fullWidth
@@ -119,9 +112,7 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
             type="password"
             value={passwordData.confirmNewPassword}
             onChange={handleChange}
-            required
           />
-          {error && <Typography color="error">{error}</Typography>}
           <Box className="button-group">
             <Button type="submit" variant="contained" color="primary">
               Save
@@ -134,6 +125,42 @@ const ChangePasswordModal = ({ user, open, handleClose, handleSave }) => {
       </Box>
     </Modal>
   );
+};
+
+export const validatePassword = (passwordData) => {
+  const { currentPassword, newPassword, confirmNewPassword } = passwordData;
+
+  if (!currentPassword.trim()) {
+    return { isValid: false, error: "Current password is required" };
+  }
+
+  if (!newPassword.trim()) {
+    return { isValid: false, error: "New password is required" };
+  }
+
+  if (newPassword.length < 8) {
+    return {
+      isValid: false,
+      error: "New password must be at least 8 characters long",
+    };
+  }
+
+  if (!confirmNewPassword.trim()) {
+    return { isValid: false, error: "Please confirm your new password" };
+  }
+
+  if (newPassword !== confirmNewPassword) {
+    return { isValid: false, error: "New passwords do not match" };
+  }
+
+  if (currentPassword === newPassword) {
+    return {
+      isValid: false,
+      error: "New password must be different from the current password",
+    };
+  }
+
+  return { isValid: true, error: "" };
 };
 
 export default ChangePasswordModal;
