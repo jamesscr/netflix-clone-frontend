@@ -20,7 +20,7 @@ or
 npm run setup
 `
 
-## Run Backend and Frontend
+## Note:- Run Backend and Frontend **Concurently**
 
 `
 yarn dev
