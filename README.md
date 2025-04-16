@@ -1,8 +1,5 @@
 # Netflix-Clone
 
-- Email: <admin@email.com>
-- Password: admin12345
-
 - Email: <user1@email.com>
 - Password: user12345
 
