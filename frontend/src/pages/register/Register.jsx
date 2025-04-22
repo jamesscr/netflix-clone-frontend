@@ -6,23 +6,29 @@ import backgroundImage from "../../assets/images/netflix_login_bg.jpg";
 import "./register.scss";
 
 const isValidEmail = (email) => {
-  const isValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
+  // Simpler email regex
+  const isValid =
+    /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   return isValid.test(email);
 };
 
 const validateUserInfo = ({ name, email, password }) => {
-  const isValidName = /^[a-z A-Z]+$/;
+  // Allow letters, spaces, hyphens, and apostrophes in names
+  const isValidName = /^[a-zA-Z\s'-]+$/;
 
   if (!name.trim()) return { ok: false, error: "Name is missing!" };
   if (!isValidName.test(name)) return { ok: false, error: "Invalid name!" };
+  if (name.length > 50) return { ok: false, error: "Name is too long!" };
 
   if (!email.trim()) return { ok: false, error: "Email is missing!" };
   if (!isValidEmail(email)) return { ok: false, error: "Invalid email!" };
+  if (email.length > 100) return { ok: false, error: "Email is too long!" };
 
   if (!password.trim()) return { ok: false, error: "Password is missing!" };
   if (password.length < 8)
-    return { ok: false, error: "Password must be 8 characters long!" };
+    return { ok: false, error: "Password must be at least 8 characters long!" };
+  if (password.length > 128)
+    return { ok: false, error: "Password is too long!" };
 
   return { ok: true };
 };
