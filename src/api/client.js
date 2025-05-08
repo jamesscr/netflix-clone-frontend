@@ -6,7 +6,7 @@ if (process.env.NODE_ENV === "production") {
   serverUrl = process.env.REACT_APP_SERVER_URL;
 } else {
   // Serveur en local
-  serverUrl = "http://localhost:3010";
+  serverUrl = "http://localhost:8000";
 }
 
 const client = axios.create({
