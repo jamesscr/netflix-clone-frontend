@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth, useNotification } from "../../hooks";
 import { Link, useNavigate } from "react-router-dom";
-import backgroundImage from "../../assets/images/netflix_login_bg.jpg";
+import backgroundImage from "../../assets/images/metflix_login_bg.jpg";
 
 import "./login.scss";
 
@@ -108,11 +108,7 @@ export default function Login() {
     >
       <div className="top">
         <div className="wrapper">
-          <img
-            className="logo"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png"
-            alt=""
-          />
+          <img className="logo" src="/metflix.png" alt="" />
         </div>
       </div>
       <div className="container">
@@ -141,12 +137,12 @@ export default function Login() {
             </button>
           </form>
           <div className="register-link">
-            New to Netflix? <Link to="/register">Sign up now.</Link>
+            New to Metflix? <Link to="/register">Sign up now.</Link>
           </div>
-          <small>
+          {/* <small>
             This page is protected by Google reCAPTCHA to ensure you're not a
             bot. <b>Learn more</b>.
-          </small>
+          </small> */}
         </div>
       </div>
     </div>

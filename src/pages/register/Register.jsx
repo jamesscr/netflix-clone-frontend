@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUser } from "../../api/auth";
 import { useAuth, useNotification } from "../../hooks";
-import backgroundImage from "../../assets/images/netflix_login_bg.jpg";
+import backgroundImage from "../../assets/images/metflix_login_bg.jpg";
 import "./register.scss";
 
 const isValidEmail = (email) => {
@@ -81,11 +81,7 @@ export default function Register() {
     >
       <div className="top">
         <div className="wrapper">
-          <img
-            className="logo"
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png"
-            alt="logo"
-          />
+          <img className="logo" src="/metflix.png" alt="logo" alt="logo" />
         </div>
       </div>
       <div className="container">
@@ -118,7 +114,7 @@ export default function Register() {
               autoComplete="new-password"
             />
             <button type="submit" className="registerButton">
-              Start Membership
+              Start Register
             </button>
           </form>
           <div className="login-link">
